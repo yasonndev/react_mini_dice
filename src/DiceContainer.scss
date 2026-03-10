@@ -1,144 +1,384 @@
-body {
-  background: #eee;
-  height: 100vh;
-  width: 100%;
-  #root {
-    width: 100%;
-  }
+//@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:wght@700&display=swap');
+
+// ─── Переменные ───────────────────────────────────────────────────────────────
+$bg:      #0d0628;
+$bg-deep: #07021a;
+$bg-card: #0a0220;
+$purple:  #5b21b6;
+$violet:  #7c3aed;
+$blue:    #2951a0;
+$indigo:  #535bf2;
+$gold:    #f3bf41;
+$red:     #f87171;
+$green:   #86efac;
+$dim:     #9580c0;
+
+// ─── Анимации ─────────────────────────────────────────────────────────────────
+@keyframes popUp {
+  0%   { transform: scale(0.7) translateY(16px); opacity: 0; }
+  100% { transform: scale(1)   translateY(0);    opacity: 1; }
 }
+@keyframes bounceIn {
+  0%   { transform: scale(0.3); opacity: 0; }
+  55%  { transform: scale(1.15); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-6px); }
+  75%      { transform: translateX(6px); }
+}
+@keyframes reelScroll {
+  0%   { transform: translateY(0%); }
+  100% { transform: translateY(-87.5%); }
+}
+@keyframes jackpotGlow {
+  0%, 100% { text-shadow: 0 0 12px $gold, 0 0 30px $gold; transform: scale(1); }
+  50%      { text-shadow: 0 0 28px #ffe87c, 0 0 70px $gold; transform: scale(1.1); }
+}
+@keyframes winPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  70%  { transform: scale(1.08); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+@keyframes tabIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Base ─────────────────────────────────────────────────────────────────────
+* { box-sizing: border-box; }
+
+body {
+  background: $bg;
+  font-family: 'Syne', sans-serif;
+}
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
 .main-wrapper {
   display: grid;
-  grid-template-rows: 30% 1fr auto;
+  grid-template-rows: auto 1fr auto;
   height: 100vh;
-  max-height: 100vh;
-  gap: 0;
-  width: 100%;
-  .sf-board {
-    background: #535bf2;
-    display: flex;
-    flex-direction: column; // Элементы теперь один под другим
-    justify-content: center;
-    align-items: center;
-    padding: 20px; // Добавим немного внутреннего пространства
+  background: $bg;
+  color: #e2d9f3;
+}
 
-    .holder {
-      // padding и margin можно уменьшить, так как теперь есть column gap
-      font-size: 80px;
-      animation: popUp 0.3s ease-out;
-    }
+// ─── Переключатель ────────────────────────────────────────────────────────────
+.game-switcher {
+  background: $bg-card;
+  border-bottom: 2px solid $purple;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+}
 
-    .result-box {
-      height: 60px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 10px; // Расстояние между эмодзи и цифрой
+.switcher-btn {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  padding: 9px 30px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: $dim;
+  border: 2px solid $purple;
 
-      .number {
-        font-size: 54px; // Сделаем число покрупнее
-        font-weight: 800;
-        color: #f3bf41;
-        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        animation: bounceIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      }
-
-      .zero-text {
-        font-size: 24px;
-        color: #ff4d4d;
-        font-weight: bold;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        animation: shake 0.4s ease-in-out;
-      }
-    }
+  &.active {
+    background: $indigo;
+    color: #fff;
+    border-color: $gold;
+    box-shadow: 0 3px 18px rgba(83, 91, 242, 0.5);
+    transform: translateY(-1px);
   }
-  .sf-deck {
-    background: #2951a0;
-    .sizer {
-      max-width: 800px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 32px 0;
-    }
-    .emojis {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      grid-template-rows: auto auto;
-      gap: 20px;
-      .emoji-item {
-        background: #747bff;
-        font-size: 32px;
-        padding: 28px;
-        border: 1px solid #747bff;
-        border-radius: 12px;
-        box-shadow: 0 3px 12px 0 #103275;
-        transition: all 0.3s ease-in-out;
-        cursor: pointer;
 
-        &:hover {
-          /* Убираем изменение font-size */
-          background-color: #f3bf41;
-          transform: rotate(2deg) scale(1.2);
-          box-shadow: 0 8px 24px 0 #103275;
-          border-color: #f3bf41;
-        }
-      }
-    }
+  &:not(.active):hover {
+    background: rgba(83, 91, 242, 0.12);
+    color: #e2d9f3;
+    border-color: $indigo;
   }
-  .sf-footer {
-    background: #103275;
-    color: #f3bf41;
-    text-align: center;
-    padding: 4px 12px;
+}
+
+// ─── Игровая зона ─────────────────────────────────────────────────────────────
+.game-area {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: tabIn 0.25s ease;
+}
+
+// ─── Кубики: доска ───────────────────────────────────────────────────────────
+.sf-board {
+  background: linear-gradient(155deg, $indigo 0%, #312e81 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  flex: 0 0 38%;
+  gap: 6px;
+
+  .holder {
+    font-size: 88px;
+    line-height: 1;
+    animation: popUp 0.3s ease-out;
   }
 
   .result-box {
-    height: 60px; /* Фиксированная высота, чтобы футер не дергался */
+    height: 70px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-top: 15px;
+    justify-content: center;
   }
 
   .number {
-    font-size: 42px;
+    font-size: 64px;
     font-weight: 800;
-    color: #f3bf41;
-    text-shadow: 0 0 15px rgba(243, 191, 65, 0.4);
+    color: $gold;
+    text-shadow: 0 4px 22px rgba(243, 191, 65, 0.55);
     animation: bounceIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
   .zero-text {
-    font-size: 20px;
-    color: #ff4d4d;
-    font-weight: bold;
-    animation: shake 0.4s ease-in-out;
+    font-size: 26px;
+    font-weight: 800;
+    color: $red;
+    animation: shake 0.4s ease;
+  }
+}
+
+// ─── Кубики: дека ────────────────────────────────────────────────────────────
+.sf-deck {
+  background: $blue;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+
+  .sizer {
+    max-width: 360px;
+    width: 100%;
   }
 
-  /* Эффект тряски для нуля */
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+  .emojis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
   }
 
-  /* Эффект прыжка для цифр */
-  @keyframes bounceIn {
-    0% { transform: scale(0.3); opacity: 0; }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
+  .emoji-item {
+    font-size: 34px;
+    padding: 22px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: $indigo;
+    border: 2px solid $indigo;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(16, 50, 117, 0.65);
+    transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+      background: $gold;
+      border-color: $gold;
+      transform: rotate(5deg) scale(1.18);
+      box-shadow: 0 8px 28px rgba(16, 50, 117, 0.8);
+    }
+  }
+}
+
+// ─── Слоты ───────────────────────────────────────────────────────────────────
+.slot-game {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 28px 16px;
+  background: $bg;
+}
+
+.slot-coins {
+  font-family: 'Space Mono', monospace;
+  font-size: 19px;
+  font-weight: 700;
+  color: $gold;
+  background: rgba(243, 191, 65, 0.13);
+  border: 2px solid $gold;
+  border-radius: 30px;
+  padding: 6px 28px;
+}
+
+.slot-machine {
+  position: relative;
+  background: linear-gradient(145deg, #1e0a4a, #0d0628);
+  border: 3px solid $violet;
+  border-radius: 22px;
+  padding: 22px 26px;
+  box-shadow: 0 0 55px rgba(124, 58, 237, 0.35), inset 0 0 30px rgba(0, 0, 0, 0.5);
+
+  .cabinet-bolts {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    .bolt {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: $violet;
+
+      &:nth-child(1) { top: 8px;    left: 8px;  }
+      &:nth-child(2) { top: 8px;    right: 8px; }
+      &:nth-child(3) { bottom: 8px; left: 8px;  }
+      &:nth-child(4) { bottom: 8px; right: 8px; }
+    }
+  }
+}
+
+.slot-window {
+  display: flex;
+  gap: 10px;
+  background: #07021a;
+  border-radius: 14px;
+  padding: 12px;
+  border: 2px solid #2d1060;
+  position: relative;
+  overflow: hidden;
+
+  // shine
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent 40%);
+    border-radius: 12px;
+    pointer-events: none;
+  }
+}
+
+.payline {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 3px;
+  background: linear-gradient(90deg, transparent, $gold, transparent);
+  opacity: 0.45;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+// ─── Барабан ─────────────────────────────────────────────────────────────────
+.reel {
+  width: 82px;
+  height: 98px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #07021a;
+  border: 2px solid $purple;
+  flex-shrink: 0;
+
+  &.spinning .reel-track {
+    animation: reelScroll 0.16s linear infinite;
   }
 
-  /* Плавное переключение самого холдера */
-  .holder {
-    font-size: 80px;
-    transition: all 0.3s ease;
-    animation: popUp 0.3s ease-out;
+  .reel-track {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  @keyframes popUp {
-    0% { transform: scale(0.8) translateY(20px); opacity: 0; }
-    100% { transform: scale(1) translateY(0); opacity: 1; }
+  .reel-symbol {
+    font-size: 44px;
+    width: 82px;
+    height: 98px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &.landed {
+      animation: bounceIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
   }
+}
+
+// ─── Результат слотов ────────────────────────────────────────────────────────
+.slot-result {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+
+  .res-jackpot { color: $gold;  animation: jackpotGlow 0.6s ease infinite; }
+  .res-win     { color: $green; animation: winPop 0.4s ease; }
+  .res-lose    { color: $red;   animation: shake 0.4s ease; }
+}
+
+// ─── Кнопки слотов ───────────────────────────────────────────────────────────
+.slot-btn {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.5px;
+  padding: 14px 44px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, $violet, $indigo);
+  color: #fff;
+  box-shadow: 0 4px 22px rgba(124, 58, 237, 0.55);
+  transition: all 0.2s ease;
+
+  &:hover:not(.disabled) {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.7);
+  }
+
+  &.disabled {
+    background: #1e0a4a;
+    color: $dim;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+}
+
+.reset-btn {
+  background: transparent;
+  color: $gold;
+  border: 2px solid $gold;
+  border-radius: 10px;
+  padding: 8px 26px;
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: $gold;
+    color: $bg;
+  }
+}
+
+// ─── Футер ───────────────────────────────────────────────────────────────────
+.sf-footer {
+  background: $bg-deep;
+  color: $gold;
+  text-align: center;
+  padding: 5px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  border-top: 1px solid $purple;
 }
