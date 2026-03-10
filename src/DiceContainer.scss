@@ -1,0 +1,144 @@
+body {
+  background: #eee;
+  height: 100vh;
+  width: 100%;
+  #root {
+    width: 100%;
+  }
+}
+.main-wrapper {
+  display: grid;
+  grid-template-rows: 30% 1fr auto;
+  height: 100vh;
+  max-height: 100vh;
+  gap: 0;
+  width: 100%;
+  .sf-board {
+    background: #535bf2;
+    display: flex;
+    flex-direction: column; // Элементы теперь один под другим
+    justify-content: center;
+    align-items: center;
+    padding: 20px; // Добавим немного внутреннего пространства
+
+    .holder {
+      // padding и margin можно уменьшить, так как теперь есть column gap
+      font-size: 80px;
+      animation: popUp 0.3s ease-out;
+    }
+
+    .result-box {
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px; // Расстояние между эмодзи и цифрой
+
+      .number {
+        font-size: 54px; // Сделаем число покрупнее
+        font-weight: 800;
+        color: #f3bf41;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        animation: bounceIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+
+      .zero-text {
+        font-size: 24px;
+        color: #ff4d4d;
+        font-weight: bold;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        animation: shake 0.4s ease-in-out;
+      }
+    }
+  }
+  .sf-deck {
+    background: #2951a0;
+    .sizer {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 32px 0;
+    }
+    .emojis {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 20px;
+      .emoji-item {
+        background: #747bff;
+        font-size: 32px;
+        padding: 28px;
+        border: 1px solid #747bff;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px 0 #103275;
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+
+        &:hover {
+          /* Убираем изменение font-size */
+          background-color: #f3bf41;
+          transform: rotate(2deg) scale(1.2);
+          box-shadow: 0 8px 24px 0 #103275;
+          border-color: #f3bf41;
+        }
+      }
+    }
+  }
+  .sf-footer {
+    background: #103275;
+    color: #f3bf41;
+    text-align: center;
+    padding: 4px 12px;
+  }
+
+  .result-box {
+    height: 60px; /* Фиксированная высота, чтобы футер не дергался */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+  }
+
+  .number {
+    font-size: 42px;
+    font-weight: 800;
+    color: #f3bf41;
+    text-shadow: 0 0 15px rgba(243, 191, 65, 0.4);
+    animation: bounceIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .zero-text {
+    font-size: 20px;
+    color: #ff4d4d;
+    font-weight: bold;
+    animation: shake 0.4s ease-in-out;
+  }
+
+  /* Эффект тряски для нуля */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  /* Эффект прыжка для цифр */
+  @keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Плавное переключение самого холдера */
+  .holder {
+    font-size: 80px;
+    transition: all 0.3s ease;
+    animation: popUp 0.3s ease-out;
+  }
+
+  @keyframes popUp {
+    0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+}
