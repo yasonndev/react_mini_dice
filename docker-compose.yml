@@ -11,6 +11,18 @@ services:
       - ./app:/app
       - /app/node_modules
     environment:
-      - CHOKIDAR_USEPOLLING=true # Нужно для корректного hot-reload в Windows/Mac
+      - CHOKIDAR_USEPOLLING=true
     stdin_open: true
     tty: true
+
+  # Добавляем сервис ngrok
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    command:
+      - "http"
+      - "tg_mini_dice:5173" # ngrok стучится во внутренний порт контейнера
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN} # Токен лучше вынести в .env
+    depends_on:
+      - tg_mini_dice
